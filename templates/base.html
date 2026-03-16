@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestió Modular - CIFP Joan Taix{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#492565', // Morado oscuro
+                            light: '#9578A6', // Morado claro/malva
+                            gray: '#1F2937', // Gris oscuro
+                            bg: '#F9FAFB'    // Fondo claro
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .btn-primary {
+            background-color: #492565;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #3b1e52;
+        }
+        .accent-border {
+            border-bottom: 4px solid #9578A6;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-gray min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-brand-dark text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold tracking-tight">CIFP Joan Taix</span>
+                    <div class="hidden md:block ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Inicio</a>
+                        <a href="/registre" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Registro Correspondencia</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if session.get('user') %}
+                        <span class="text-sm opacity-80">{{ session.user.email }}</span>
+                        <a href="/logout" class="text-sm font-medium hover:underline">Cerrar Sesión</a>
+                    {% else %}
+                        <a href="/login" class="btn-primary">Iniciar Sesión</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-sm text-gray-500">
+        &copy; 2024 CIFP Joan Taix - Centre Integrat de Formació Professional
+    </footer>
+</body>
+</html>

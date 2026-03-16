@@ -1,3 +1,19 @@
+# Archivos de entorno y secretos
+.env
+credenciales/
+
+# Entornos virtuales de Python
+venv/
+env/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Correspondencia - CIFP Joan Taix{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-brand-dark accent-border pb-2 inline-block">Registro de Correspondencia</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulario -->
+        <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Nuevo Registro</h2>
+            
+            <form action="/registre" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Registro</label>
+                    <select name="tipo" id="tipo-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light" onchange="toggleFields()">
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Municipio / Destino</label>
+                        <input type="text" name="municipio" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+                    
+                    <div id="field-procedencia">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Procedencia / Remitente</label>
+                        <input type="text" name="procedencia" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+
+                    <div id="field-destinatario" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Destinatario</label>
+                        <input type="text" name="destinatario" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Documento</label>
+                        <input type="text" name="tipo_documento" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
+                        <textarea name="asunto" required rows="2" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observaciones</label>
+                        <textarea name="observaciones" rows="2" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full btn-primary font-bold py-3 mt-4">Guardar Registro</button>
+            </form>
+        </div>
+
+        <!-- Tabla -->
+        <div class="lg:col-span-2">
+            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Últimos 5 Registros</h2>
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Num</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asunto</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for reg in registros %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-dark">
+                                {{ reg.num_registre }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full {% if reg.tipo_ui == 'Entrada' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
+                                    {{ reg.tipo_ui }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                {{ reg.timestamp.strftime('%d/%m/%Y %H:%M') if reg.timestamp else 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                                {{ reg.asunto }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ reg.usuario_email }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">No hay registros recientes.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFields() {
+        const tipo = document.getElementById('tipo-select').value;
+        const procedencia = document.getElementById('field-procedencia');
+        const destinatario = document.getElementById('field-destinatario');
+        
+        if (tipo === 'entrada') {
+            procedencia.classList.remove('hidden');
+            destinatario.classList.add('hidden');
+        } else {
+            procedencia.classList.add('hidden');
+            destinatario.classList.remove('hidden');
+        }
+    }
+</script>
+{% endblock %}
