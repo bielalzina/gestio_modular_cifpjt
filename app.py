@@ -24,7 +24,8 @@ def index():
 def login():
     # Simple redirect to Google OAuth 2.0 (Simplified for boilerplate)
     client_id = os.getenv('GOOGLE_CLIENT_ID')
-    redirect_uri = url_for('callback', _external=True)
+    # Priorizar REDIRECT_URI de .env, si no, generarla automáticamente
+    redirect_uri = os.getenv('GOOGLE_REDIRECT_URI') or url_for('callback', _external=True)
     scope = "openid email profile"
     auth_url = (f"https://accounts.google.com/o/oauth2/v2/auth?"
                 f"client_id={client_id}&response_type=code&scope={scope}&"
@@ -35,7 +36,7 @@ def login():
 def callback():
     code = request.args.get('code')
     if not code:
-        return "Error en la autenticación", 400
+        return "Error en l'autenticació", 400
     
     # Exchange code for tokens
     config = get_google_auth_config()
@@ -44,7 +45,7 @@ def callback():
         'code': code,
         'client_id': os.getenv('GOOGLE_CLIENT_ID'),
         'client_secret': os.getenv('GOOGLE_CLIENT_SECRET'),
-        'redirect_uri': url_for('callback', _external=True),
+        'redirect_uri': os.getenv('GOOGLE_REDIRECT_URI') or url_for('callback', _external=True),
         'grant_type': 'authorization_code'
     }
     
@@ -57,11 +58,11 @@ def callback():
     
     # Domain restriction
     if not user_info.get('email', '').endswith(f'@{DOMAIN}'):
-        flash(f"Solo se permiten usuarios del dominio @{DOMAIN}", "error")
+        flash(f"Només es permeten usuaris del domini @{DOMAIN}", "error")
         return redirect(url_for('index'))
     
     session['user'] = user_info
-    flash(f"Bienvenido, {user_info.get('name')}", "success")
+    flash(f"Benvingut/da, {user_info.get('name')}", "success")
     return redirect(url_for('registre'))
 
 @app.route('/logout')
@@ -74,12 +75,12 @@ def logout():
 @group_required(REGISTRE_GROUP)
 def registre():
     if request.method == 'POST':
-        # Collect data from form
+        # Recollida de dades segons el nou format de la imatge
         data = {
             'tipo': request.form.get('tipo'),
-            'municipio': request.form.get('municipio'),
-            'procedencia': request.form.get('procedencia') if request.form.get('tipo') == 'entrada' else None,
-            'destinatario': request.form.get('destinatario') if request.form.get('tipo') == 'salida' else None,
+            'data_manual': request.form.get('data_manual'),
+            'municipi': request.form.get('municipi'),
+            'agent': request.form.get('agent'), # Remitent o Destinatari segons UI
             'tipo_documento': request.form.get('tipo_documento'),
             'asunto': request.form.get('asunto'),
             'observaciones': request.form.get('observaciones'),
@@ -88,15 +89,17 @@ def registre():
         
         try:
             reg_id = add_registre(data)
-            flash(f"Registro guardado correctamente con el número {reg_id}", "success")
+            flash(f"Registre desat correctament amb el número {reg_id}", "success")
         except Exception as e:
-            flash(f"Error al guardar el registro: {str(e)}", "error")
+            flash(f"Error en desar el registre: {str(e)}", "error")
             
         return redirect(url_for('registre'))
     
-    # GET: Show table
+    # GET: Mostrar taula
     registros = get_recent_registres(5)
-    return render_template('registre.html', registros=registros)
+    from datetime import datetime
+    now_date = datetime.now().strftime('%Y-%m-%d')
+    return render_template('registre.html', registros=registros, now_date=now_date)
 
 if __name__ == '__main__':
     # Use waitress as a production-ready server for local testing if needed

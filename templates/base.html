@@ -45,16 +45,16 @@
                 <div class="flex items-center">
                     <span class="text-xl font-bold tracking-tight">CIFP Joan Taix</span>
                     <div class="hidden md:block ml-10 flex items-baseline space-x-4">
-                        <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Inicio</a>
-                        <a href="/registre" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Registro Correspondencia</a>
+                        <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Inici</a>
+                        <a href="/registre" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-brand-light">Registre Correspondència</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     {% if session.get('user') %}
                         <span class="text-sm opacity-80">{{ session.user.email }}</span>
-                        <a href="/logout" class="text-sm font-medium hover:underline">Cerrar Sesión</a>
+                        <a href="/logout" class="text-sm font-medium hover:underline">Tancar Sessió</a>
                     {% else %}
-                        <a href="/login" class="btn-primary">Iniciar Sesión</a>
+                        <a href="/login" class="btn-primary">Iniciar Sessió</a>
                     {% endif %}
                 </div>
             </div>
@@ -76,7 +76,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Peu de pàgina -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-sm text-gray-500">
         &copy; 2026 CIFP Joan Taix - Centre Integrat de Formació Professional
     </footer>

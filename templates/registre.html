@@ -1,73 +1,72 @@
 {% extends "base.html" %}
 
-{% block title %}Registro de Correspondencia - CIFP Joan Taix{% endblock %}
+{% block title %}Registre de Correspondència - CIFP Joan Taix{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8 text-brand-dark accent-border pb-2 inline-block">Registro de Correspondencia</h1>
+    <h1 class="text-3xl font-bold mb-8 text-brand-dark accent-border pb-2 inline-block">Registre de Correspondència</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Formulario -->
         <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-100">
-            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Nuevo Registro</h2>
+            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Nou Registre</h2>
             
-            <form action="/registre" method="POST" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Registro</label>
+            <form action="/registre" method="POST" class="space-y-4">                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipus de Registre</label>
                     <select name="tipo" id="tipo-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light" onchange="toggleFields()">
                         <option value="entrada">Entrada</option>
-                        <option value="salida">Salida</option>
+                        <option value="salida">Sortida</option>
                     </select>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Municipio / Destino</label>
-                        <input type="text" name="municipio" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
-                    </div>
-                    
-                    <div id="field-procedencia">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Procedencia / Remitente</label>
-                        <input type="text" name="procedencia" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
-                    </div>
-
-                    <div id="field-destinatario" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Destinatario</label>
-                        <input type="text" name="destinatario" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                        <label id="label-data" class="block text-sm font-medium text-gray-700 mb-1">Data de registre d'entrada</label>
+                        <input type="date" name="data_manual" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light" value="{{ now_date }}">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Documento</label>
+                        <label id="label-municipi" class="block text-sm font-medium text-gray-700 mb-1">Municipi de procedència</label>
+                        <input type="text" name="municipi" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+                    
+                    <div id="field-agent">
+                        <label id="label-agent" class="block text-sm font-medium text-gray-700 mb-1">Remitent</label>
+                        <input type="text" name="agent" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipus de Document</label>
                         <input type="text" name="tipo_documento" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Assumpte</label>
                         <textarea name="asunto" required rows="2" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Observaciones</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observacions</label>
                         <textarea name="observaciones" rows="2" class="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-light focus:border-brand-light"></textarea>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full btn-primary font-bold py-3 mt-4">Guardar Registro</button>
+                <button type="submit" class="w-full btn-primary font-bold py-3 mt-4">Desar Registre</button>
             </form>
         </div>
 
-        <!-- Tabla -->
+        <!-- Taula -->
         <div class="lg:col-span-2">
-            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Últimos 5 Registros</h2>
+            <h2 class="text-xl font-semibold mb-6 text-brand-dark">Últims 5 Registres</h2>
             <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Num</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asunto</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipus</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Doc.</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assumpte</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuari</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -82,9 +81,9 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                {{ reg.timestamp.strftime('%d/%m/%Y %H:%M') if reg.timestamp else 'N/A' }}
+                                {{ reg.data_manual if reg.data_manual else (reg.timestamp.strftime('%d/%m/%Y') if reg.timestamp else 'N/A') }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate" title="{{ reg.asunto }}">
                                 {{ reg.asunto }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -93,7 +92,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">No hay registros recientes.</td>
+                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">No hi ha registres recents.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -106,15 +105,18 @@
 <script>
     function toggleFields() {
         const tipo = document.getElementById('tipo-select').value;
-        const procedencia = document.getElementById('field-procedencia');
-        const destinatario = document.getElementById('field-destinatario');
+        const labelData = document.getElementById('label-data');
+        const labelMunicipi = document.getElementById('label-municipi');
+        const labelAgent = document.getElementById('label-agent');
         
         if (tipo === 'entrada') {
-            procedencia.classList.remove('hidden');
-            destinatario.classList.add('hidden');
+            labelData.innerText = "Data de registre d'entrada";
+            labelMunicipi.innerText = "Municipi de procedència";
+            labelAgent.innerText = "Remitent";
         } else {
-            procedencia.classList.add('hidden');
-            destinatario.classList.remove('hidden');
+            labelData.innerText = "Data de registre de sortida";
+            labelMunicipi.innerText = "Municipi de destinació";
+            labelAgent.innerText = "Destinatari";
         }
     }
 </script>

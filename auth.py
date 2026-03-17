@@ -19,8 +19,12 @@ def get_admin_service():
         return None
     creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    # Domain-wide delegation is usually needed for Directory API
-    # creds = creds.with_subject('admin@cifpjoantaix.cat') 
+    
+    # La API de Directorio requiere impersonar a un usuario administrador del dominio
+    admin_email = os.getenv('GOOGLE_ADMIN_EMAIL')
+    if admin_email:
+        creds = creds.with_subject(admin_email)
+        
     return build('admin', 'directory_v1', credentials=creds)
 
 def is_user_in_group(user_email, group_email):
@@ -56,7 +60,7 @@ def group_required(group_email):
             
             user_email = session['user'].get('email')
             if not is_user_in_group(user_email, group_email):
-                abort(403, description="No tienes permiso para acceder a este módulo.")
+                abort(403, description="No teniu permís per accedir a aquest mòdul.")
             
             return f(*args, **kwargs)
         return decorated_function

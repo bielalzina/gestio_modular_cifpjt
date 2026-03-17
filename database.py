@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize Firestore
-db = firestore.Client(project=os.getenv('FIRESTORE_PROJECT_ID'))
+project_id = os.getenv('FIRESTORE_PROJECT_ID')
+print(f"DEBUG: Conectando a Firestore con Proyecto: {project_id}")
+db = firestore.Client(project=project_id)
 
 def get_next_id(collection_name):
     """
@@ -70,7 +72,7 @@ def get_recent_registres(limit=5):
     for doc in salidas:
         d = doc.to_dict()
         d['id'] = doc.id
-        d['tipo_ui'] = 'Salida'
+        d['tipo_ui'] = 'Sortida'
         all_regs.append(d)
         
     # Sort combined list by timestamp descending and take top N
