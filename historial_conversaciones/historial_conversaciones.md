@@ -53,3 +53,28 @@ Formulario interactivo que cambia campos entre "Procedencia" y "Destinatario" di
 
 ### 5. Resultado Final
 Se entregó una base sólida, modular y escalable que cumple con los estándares de seguridad y diseño requeridos por el centro educativo CIFP Joan Taix.
+
+---
+
+## Fecha: 17 de Marzo, 2026 - Sesión 2
+
+### 1. Resolución de Errores de Compatibilidad
+El usuario reportó un error crítico al ejecutar `app.py` en un entorno con **Python 3.14**: `TypeError: Metaclasses with custom tp_new are not supported`.
+
+**Análisis y Solución:**
+- El error se debía a cambios en la API de C de Python 3.14 que rompían versiones antiguas de `protobuf` y `google-cloud-firestore`.
+- Se actualizó `requirements.txt` con versiones modernas: `google-cloud-firestore>=2.22.0` y dependencias asociadas.
+- Se forzó la actualización de `protobuf` a la versión 6.x en el entorno virtual (`.venv`).
+
+### 2. Corrección de Configuración Local (.env)
+Se detectaron y corrigieron errores en las rutas absolutas dentro del archivo `.env`:
+- Se cambiaron las rutas de `F:\GITHUB\...` a la ubicación real en el sistema del usuario: `c:\Users\GABRIEL\Documents\GitHub\gestio_modular_cifpjt\...`.
+- Se habilitó la variable de entorno `GOOGLE_APPLICATION_CREDENTIALS` necesaria para la autenticación de Firestore.
+
+### 3. Ajustes de Diseño (Frontend)
+El usuario actualizó el pie de página en `templates/base.html` para reflejar el año **2026** de acuerdo a la cronología del proyecto.
+
+### 4. Estado Final de la Sesión
+- La aplicación se ejecuta correctamente en el puerto **8080** usando el servidor `waitress`.
+- La conexión con Firestore ha sido verificada tras corregir las rutas de las credenciales de la cuenta de servicio.
+
